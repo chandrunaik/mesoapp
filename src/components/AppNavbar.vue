@@ -10,7 +10,7 @@
         <div class="mt-1">Destroy</div>
       </div>
     </div>
-    <div id="available-apps">
+    <div id="available-apps" class="mt-3">
       <p class="pl-3 mb-1">Available Apps</p>
       <ul class="list-group d-flex flex-column">
         <li
@@ -71,42 +71,42 @@ export default {
 
 .list-group-item {
   &.Hadoop {
-    border-left: 2px solid violet;
+    border-left: 4px solid #92039e;
 
     .fa-plus-circle {
-      color: violet;
+      color: #92039e;
     }
   }
 
   &.Rails {
-    border-left: 2px solid green;
+    border-left: 4px solid #007f98;
 
     .fa-plus-circle {
-      color: green;
+      color: #007f98;
     }
   }
 
   &.Chronos {
-    border-left: 2px solid blue;
+    border-left: 4px solid #044bba;
 
     .fa-plus-circle {
-      color: blue;
+      color: #044bba;
     }
   }
 
   &.Storm {
-    border-left: 2px solid yellow;
+    border-left: 4px solid #a5b31c;
 
     .fa-plus-circle {
-      color: yellow;
+      color: #a5b31c;
     }
   }
 
   &.Spark {
-    border-left: 2px solid green;
+    border-left: 4px solid #00b048;
 
     .fa-plus-circle {
-      color: green;
+      color: #00b048;
     }
   }
   padding: 15px 20px;

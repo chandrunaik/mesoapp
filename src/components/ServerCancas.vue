@@ -3,13 +3,15 @@
     <h3>Server Canvas</h3>
     <div class="d-flex flex-wrap flex-row">
       <div v-for="(server, index) in servers" :key="index" class="server-container rounded m-3">
-        <div class="app-container text-center" v-if="server.apps.length > 0">
-          <div v-for="(app, index) in server.apps" :key="index" class="app p-3" :class="app.appName">
-            <div class="icon-text">{{ app.iconText }}</div>
-            <div class="app-name">{{ app.appName }}</div>
-            <div class="time-stamp">Added {{ app.duration }}</div>
+        <transition name="fade">
+          <div class="app-container text-center" v-if="server.apps.length > 0">
+            <div v-for="(app, index) in server.apps" :key="index" class="app p-3" :class="app.appName">
+              <div class="icon-text">{{ app.iconText }}</div>
+              <div class="app-name">{{ app.appName }}</div>
+              <div class="time-stamp mt-3">Added {{ app.duration }}</div>
+            </div>
           </div>
-        </div>
+        </transition>
       </div>
     </div>
   </div>
@@ -92,7 +94,7 @@ export default {
         appName: appname,
         iconText: appname === "Hadoop" ? "Hd" : appname.substr(0, 2),
         time: moment(),
-        duration:  moment().fromNow()
+        duration: moment().fromNow()
       };
       return app;
     },
@@ -127,20 +129,20 @@ export default {
       }
 
       if (lastAddedAppIndex) {
-      	 this.servers[lastAddedAppIndex].apps.pop();
-      	 return;
+        this.servers[lastAddedAppIndex].apps.pop();
+        return;
 
       }
 
       for (let index in this.servers) {
-        if (this.servers[index].apps.length > 0  && this.servers[index].apps[0].appName === appname) {
+        if (this.servers[index].apps.length > 0 && this.servers[index].apps[0].appName === appname) {
           lastAddedAppIndex = index;
         }
       }
 
-       if (lastAddedAppIndex) {
-      	 this.servers[lastAddedAppIndex].apps.shift();
-      	 return;
+      if (lastAddedAppIndex) {
+        this.servers[lastAddedAppIndex].apps.shift();
+        return;
       }
     }
   }
@@ -160,24 +162,25 @@ export default {
     display: inline-block;
     width: 50%;
     font-weight: bold;
+
     &.Hadoop {
-      background: violet;
+      background-image: linear-gradient(to left top, #9c00a7, #92039e, #880595, #7e068c, #740783);
     }
 
     &.Rails {
-      background: green;
+      background-image: linear-gradient(to left top, #0477a7, #007ba1, #007f98, #00818d, #078381);
     }
 
     &.Chronos {
-      background: blue;
+      background-image: linear-gradient(to left top, #0043a7, #044bba, #0a53cc, #125ce0, #1964f3);
     }
 
     &.Storm {
-      background: yellow;
+      background-image: linear-gradient(to left top, #93a70f, #a5b31c, #b7c028, #c9cc33, #dcd93d);
     }
 
     &.Spark {
-      background: green;
+      background-image: linear-gradient(to right bottom, #00a745, #00b048, #00ba4b, #00c34d, #01cd50);
     }
 
     .icon-text {
@@ -210,7 +213,21 @@ export default {
       border-radius: 5px 0 0 5px;
       border-right: 1px solid black;
       height: 100%;
+      vertical-align: top;
     }
   }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .5s;
+}
+
+.fade-enter,
+.fade-leave-to
+
+/* .fade-leave-active below version 2.1.8 */
+  {
+  opacity: 0;
 }
 </style>
