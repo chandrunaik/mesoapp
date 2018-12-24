@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # mesoapp
 
 ## Project setup
