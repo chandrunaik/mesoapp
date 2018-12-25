@@ -2,11 +2,12 @@
 
 ## Project setup
 ```
-yarn install
+git clone https://github.com/chandrunaik/mesoapp.git
+cd mesoapp
+npm install
 ```
 
-### Compiles and hot-reloads for development
+### Run the application
 ```
-yarn run serve
+npm run serve
 ```
-
