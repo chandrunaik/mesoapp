@@ -1,6 +1,8 @@
 <template>
   <div id="app" class="d-flex align-items-stretch">
+    <!-- side nav to display available apps -->
     <div id="app-navbar"><app-navbar /></div>
+    <!-- server canvas container -->
     <div id="server-canvas"><server-canvas /></div>
   </div>
 </template>
@@ -32,9 +34,10 @@ export default {
   min-width: 250px;
   max-width: 250px;
 }
-#server-canvas{
+#server-canvas {
   flex: 1;
   background: #000;
   padding: 25px 20px;
+  overflow-y: auto;
 }
 </style>
