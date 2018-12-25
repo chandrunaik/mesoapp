@@ -24,7 +24,8 @@ import * as moment from "moment";
 export default {
   data() {
     return {
-      servers: [{
+      servers: [
+        {
           apps: []
         },
         {
@@ -71,7 +72,7 @@ export default {
       // remove lastly added server
       if (this.servers.length > 0) {
         let server = this.servers.pop();
-        // reallocate apps 
+        // reallocate apps
         if (server.apps.length !== 0) {
           server.apps.forEach(app => {
             this.reallocateApp(app);
@@ -110,7 +111,7 @@ export default {
     findFreeServer() {
       let index = undefined;
 
-      // 
+      //
       for (let i in this.servers) {
         if (this.servers[i].apps.length === 0) {
           index = i;
@@ -130,23 +131,21 @@ export default {
       return index;
     },
     removeApp(appname) {
-       let minTime = undefined;
-       let serverIndex = undefined;
-       let appIndex = undefined;
+      let minTime = undefined;
+      let serverIndex = undefined;
+      let appIndex = undefined;
 
       // find last added app using timestamp
-      for (let i = 0; i <= this.servers.length - 1 ; i++) {
-       
-        for(let j = 0; j <= this.servers[i].apps.length - 1 ; j++){
-          if(this.servers[i].apps[j].appName === appname){
+      for (let i = 0; i <= this.servers.length - 1; i++) {
+        for (let j = 0; j <= this.servers[i].apps.length - 1; j++) {
+          if (this.servers[i].apps[j].appName === appname) {
             let timeStamp = Number(this.servers[i].apps[j].timeStamp);
-            
-            if(!minTime){
+
+            if (!minTime) {
               minTime = timeStamp;
               serverIndex = i;
               appIndex = j;
-
-            }else if(minTime < timeStamp){ 
+            } else if (minTime < timeStamp) {
               minTime = timeStamp;
               serverIndex = i;
               appIndex = j;
@@ -155,11 +154,10 @@ export default {
         }
       }
 
-      if(minTime){
+      if (minTime) {
         // remove last added app
-       this.servers[serverIndex].apps.splice(appIndex,1); 
+        this.servers[serverIndex].apps.splice(appIndex, 1);
       }
-
     }
   }
 };
@@ -180,48 +178,58 @@ export default {
     font-weight: bold;
 
     &.Hadoop {
-      background-image: linear-gradient(to left top,
+      background-image: linear-gradient(
+        to left top,
         #9c00a7,
         #92039e,
         #880595,
         #7e068c,
-        #740783);
+        #740783
+      );
     }
 
     &.Rails {
-      background-image: linear-gradient(to left top,
+      background-image: linear-gradient(
+        to left top,
         #0477a7,
         #007ba1,
         #007f98,
         #00818d,
-        #078381);
+        #078381
+      );
     }
 
     &.Chronos {
-      background-image: linear-gradient(to left top,
+      background-image: linear-gradient(
+        to left top,
         #0043a7,
         #044bba,
         #0a53cc,
         #125ce0,
-        #1964f3);
+        #1964f3
+      );
     }
 
     &.Storm {
-      background-image: linear-gradient(to left top,
+      background-image: linear-gradient(
+        to left top,
         #93a70f,
         #a5b31c,
         #b7c028,
         #c9cc33,
-        #dcd93d);
+        #dcd93d
+      );
     }
 
     &.Spark {
-      background-image: linear-gradient(to right bottom,
+      background-image: linear-gradient(
+        to right bottom,
         #00a745,
         #00b048,
         #00ba4b,
         #00c34d,
-        #01cd50);
+        #01cd50
+      );
     }
 
     .icon-text {

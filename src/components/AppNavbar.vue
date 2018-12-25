@@ -68,8 +68,8 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.fas:hover{
-  opacity: .8;
+.fas:hover {
+  opacity: 0.8;
 }
 .pointer {
   cursor: pointer;
