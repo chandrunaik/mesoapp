@@ -5,6 +5,7 @@
       <div v-for="(server, index) in servers" :key="index" class="server-container rounded m-3">
         <transition name="fade">
           <div class="app-container text-center" v-if="server.apps.length > 0">
+            <!-- display apps -->
             <div v-for="(app, index) in server.apps" :key="index" class="app p-3" :class="app.appName">
               <div class="icon-text">{{ app.iconText }}</div>
               <div class="app-name">{{ app.appName }}</div>
@@ -18,7 +19,7 @@
 </template>
 <script>
 import { EventBus } from "./../event-bus.js";
-import * as moment from 'moment';
+import * as moment from "moment";
 
 export default {
   data() {
@@ -39,111 +40,126 @@ export default {
     };
   },
   mounted() {
-    EventBus.$on("add-app", appname => {
-      this.addApp(appname);
-    });
-    EventBus.$on("remove-app", appname => {
-      this.removeApp(appname);
-    });
+    // add and destroy server event handler
     EventBus.$on("add-server", () => {
       this.addServer();
     });
     EventBus.$on("destroy-server", () => {
       this.destroyServer();
     });
+    // add and remove app event handler
+    EventBus.$on("add-app", appname => {
+      this.addApp(appname);
+    });
+    EventBus.$on("remove-app", appname => {
+      this.removeApp(appname);
+    });
   },
   methods: {
     addServer() {
       let newServer = this.createServer();
+      // add to servers list
       this.servers.push(newServer);
     },
     createServer() {
+      // create dummy server object
       return {
         apps: []
       };
     },
     destroyServer() {
-      //remove last added server
-      let server = this.servers.pop();
-
-      if (server.apps.length !== 0) {
-        server.apps.forEach(app => {
-          this.reallocateApp(app);
-        });
+      // remove lastly added server
+      if (this.servers.length > 0) {
+        let server = this.servers.pop();
+        // reallocate apps 
+        if (server.apps.length !== 0) {
+          server.apps.forEach(app => {
+            this.reallocateApp(app);
+          });
+        }
+      } else {
+        return;
       }
     },
     reallocateApp(app) {
-      let serverIndex = this.findFreeServer();
-      if (!serverIndex) {
-        console.log("No space!!!");
+      let index = this.findFreeServer();
+      if (!index) {
+        alert(`Removed ${app.appName} app due to no space in the cluster.`);
       } else {
-        this.servers[serverIndex].apps.push(app);
+        this.servers[index].apps.push(app);
       }
     },
     addApp(appname) {
-      let serverIndex = this.findFreeServer();
-      if (!serverIndex) {
-        console.log("No space!!!");
+      let index = this.findFreeServer();
+      if (!index) {
+        alert(`Please add new server to the cluster before adding new apps.`);
       } else {
         let newApp = this.createApp(appname);
-        this.servers[serverIndex].apps.push(newApp);
+        this.servers[index].apps.push(newApp);
       }
     },
     createApp(appname) {
       let app = {
         appName: appname,
         iconText: appname === "Hadoop" ? "Hd" : appname.substr(0, 2),
-        time: moment(),
+        timeStamp: moment().valueOf(),
         duration: moment().fromNow()
       };
       return app;
     },
     findFreeServer() {
-      let freeServerIndex = undefined;
+      let index = undefined;
 
-      for (let index in this.servers) {
-        if (this.servers[index].apps.length === 0) {
-          freeServerIndex = index;
+      // 
+      for (let i in this.servers) {
+        if (this.servers[i].apps.length === 0) {
+          index = i;
           break;
         }
       }
 
-      if (!freeServerIndex) {
-        for (let index in this.servers) {
-          if (this.servers[index].apps.length === 1) {
-            freeServerIndex = index;
+      if (!index) {
+        for (let i in this.servers) {
+          if (this.servers[i].apps.length === 1) {
+            index = i;
             break;
           }
         }
       }
 
-      return freeServerIndex;
+      return index;
     },
     removeApp(appname) {
-      let lastAddedAppIndex = undefined;
+       let minTime = undefined;
+       let serverIndex = undefined;
+       let appIndex = undefined;
 
-      for (let index in this.servers) {
-        if (this.servers[index].apps.length === 2 && this.servers[index].apps[1].appName === appname) {
-          lastAddedAppIndex = index;
+      // find last added app using timestamp
+      for (let i = 0; i <= this.servers.length - 1 ; i++) {
+       
+        for(let j = 0; j <= this.servers[i].apps.length - 1 ; j++){
+          if(this.servers[i].apps[j].appName === appname){
+            let timeStamp = Number(this.servers[i].apps[j].timeStamp);
+            
+            if(!minTime){
+              minTime = timeStamp;
+              serverIndex = i;
+              appIndex = j;
+
+            }else if(minTime < timeStamp){ 
+              minTime = timeStamp;
+              serverIndex = i;
+              appIndex = j;
+            }
+          }
         }
       }
 
-      if (lastAddedAppIndex) {
-        this.servers[lastAddedAppIndex].apps.pop();
-        return;
-
+      if(minTime){
+        // remove last added app
+       this.servers[serverIndex].apps.splice(appIndex,1); 
       }
 
-      for (let index in this.servers) {
-        if (this.servers[index].apps.length > 0 && this.servers[index].apps[0].appName === appname) {
-          lastAddedAppIndex = index;
-        }
-      }
-
-      if (lastAddedAppIndex) {
-        this.servers[lastAddedAppIndex].apps.shift();
-        return;
-      }
     }
   }
 };
@@ -164,23 +180,48 @@ export default {
     font-weight: bold;
 
     &.Hadoop {
-      background-image: linear-gradient(to left top, #9c00a7, #92039e, #880595, #7e068c, #740783);
+      background-image: linear-gradient(to left top,
+        #9c00a7,
+        #92039e,
+        #880595,
+        #7e068c,
+        #740783);
     }
 
     &.Rails {
-      background-image: linear-gradient(to left top, #0477a7, #007ba1, #007f98, #00818d, #078381);
+      background-image: linear-gradient(to left top,
+        #0477a7,
+        #007ba1,
+        #007f98,
+        #00818d,
+        #078381);
     }
 
     &.Chronos {
-      background-image: linear-gradient(to left top, #0043a7, #044bba, #0a53cc, #125ce0, #1964f3);
+      background-image: linear-gradient(to left top,
+        #0043a7,
+        #044bba,
+        #0a53cc,
+        #125ce0,
+        #1964f3);
     }
 
     &.Storm {
-      background-image: linear-gradient(to left top, #93a70f, #a5b31c, #b7c028, #c9cc33, #dcd93d);
+      background-image: linear-gradient(to left top,
+        #93a70f,
+        #a5b31c,
+        #b7c028,
+        #c9cc33,
+        #dcd93d);
     }
 
     &.Spark {
-      background-image: linear-gradient(to right bottom, #00a745, #00b048, #00ba4b, #00c34d, #01cd50);
+      background-image: linear-gradient(to right bottom,
+        #00a745,
+        #00b048,
+        #00ba4b,
+        #00c34d,
+        #01cd50);
     }
 
     .icon-text {
@@ -216,18 +257,5 @@ export default {
       vertical-align: top;
     }
   }
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity .5s;
-}
-
-.fade-enter,
-.fade-leave-to
-
-/* .fade-leave-active below version 2.1.8 */
-  {
-  opacity: 0;
 }
 </style>
